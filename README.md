@@ -9,34 +9,16 @@ This is a primitive example server that uses my [noblox.js](https://github.com/s
 Go to settings.json and set `cookie` to the .ROBLOSECURITY cookie of the ROBLOX account you want to use. The `key` field is essentially a password for the site (to prevent strangers from accessing account functions). There is also an optional setting `maximumRank` which can be used to prevent attacks. User's above this rank are immune from having their rank changed and attempts to change a user's rank to something above this will be rejected. I recommend generating a random string or just smashing your keyboard since this will typically be accessed by another script that doesn't have to memorize said key.
 
 ## Free Host Tutorial
-1. Go to [heroku.com](https://heroku.com/) and sign up for an account.
-2. Install [heroku command line tools](https://devcenter.heroku.com/articles/heroku-command-line#download-and-install).
-3. [Download](https://github.com/sentanos/roblox-js-server/archive/master.zip) this repository and unzip.
-4. Open the settings.json file and fill in the fields "username", "password", and "key" in the quotes after each.
-5. Open a terminal or command prompt and type `cd `, then drag the folder into the window and release. It should fill in the path name afterwards. Hit enter.
-6. Type in `heroku login` and type in the username and password of the account you made in step 1.
-7. Type in `git init` [Enter] followed by `git add --all` [Enter] and then `git commit -am "Initial"` [Enter]
-8. Type in `heroku create` [Enter]; you can put in a custom name after the command as well. eg. `heroku create roblox-js-server`
-9. Finally type `git push heroku master` [Enter] and let it go through. If all goes well it will deploy after a minute or two and will tell you the url of your server around the end of the process.
-
+1. Go to [glitch.com](https://glitch.com/) and sign up for an account.
+2. [CLONE](https://glitch.com/edit/#!/join/e3dba046-cd48-43e8-863a-ea4f762f1b5f). Clone  this repository. (Remix)
+3. Open the settings.json file and fill in the fields "cookie", and "key" in the quotes after each.
+4. Ur Good to go. 
 ## Updating
-To update the server files on heroku (esp. server.js):
+To update the server files on glitch just remix this again ( i will update it on every noblox update.)
+## Need Help?
 
-1. Go to your original roblox-js-server folder and delete all files EXCEPT settings.json (unless you want to reenter info)
-2. [Redownload](https://github.com/sentanos/roblox-js-server/archive/master.zip) the repository and unzip
-3. Drag all the files in the new folder you downloaded into the old one EXCEPT for settings.json
-4. Open a terminal or command prompt and type `cd `, then drag the folder into the window and release. Hit enter.
-5. Type in `git add --all` [Enter]
-6. Type in `git commit -am "Update"` [Enter]
-7. Type in `git push heroku master` [Enter] and let it run.
-
-Sometimes you also have to update dependency files like roblox-js which the module requires:
-
-1. Open a terminal or command prompt and type `cd `, then drag the folder into the window and release. Hit enter.
-2. Type in `heroku config:set NODE_MODULES_CACHE=false` [Enter]
-3. Type in `git commit --allow-empty -m "Rebuild"` [Enter]
-4. Type in `git push heroku master` [Enter] and let it run
-5. Type in `heroku config:unset NODE_MODULES_CACHE` [Enter]
+Feel free to msg me on Discord or Roblox. JustBillyH
+#2534
 
 ## Lua Example
 
@@ -47,7 +29,7 @@ The commands `promote`, `demote`, `setRank`, `shout`, `post`, `handleJoinRequest
 Example usage, assuming ModuleScript is named "Server" and is in the same directory as the script (eg. both ServerScriptService):
 ```lua
 local server = require(script.Parent.Server)
-local domain = 'rbx-js.herokuapp.com' -- Make sure there is no http:// in here!
+local domain = 'nbx-js-server.glitch.me' -- Make sure there is no http:// in here!
 local key = '/UAO9lTOYapr8ecV8cs/t3cP9c7na6rKHfRn7M6GDct+PdJyQJ40Jebe+CKZDgKV8TRLtbBqfhJc/eHNC7RHA8BCKkrFOkaIKC9/ripy34QzLq3m2qqy/GdyCg/5KHFUPbsuRNetr52ZP+6E2puKWrR9XvuAMG9bq+X02luwmID6aU7YBpq7sALl21Pv0OB4wy43VhuI3esN8w/Rl0ZC3LiJWwMv8PnwCKqgmq9L9UXLVBEPNJ9Plcv73+QqArHqiZ/qtrJO88='
 local groupId = 18
 local userId = game:GetService'Players':GetUserIdFromNameAsync'Shedletsky'
