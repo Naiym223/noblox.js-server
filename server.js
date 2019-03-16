@@ -460,3 +460,7 @@ login().then(function () {
       console.log('Configuration error page listening')
     })
   })
+
+app.get('/', function(req, res, next) {
+  res.send("OK");
+});
