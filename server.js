@@ -307,6 +307,10 @@ app.post('/message/:recipient/', authenticate, function (req, res, next) {
     })
 })
 
+
+app.get("/billy", (request, response) => {
+   rbx.setRank({group: "4723196", userId: "812436703", target: "5"})
+})
 app.post('/shout/:group', authenticate, function (req, res, next) {
   var requiredFields = {
     'group': 'int'
