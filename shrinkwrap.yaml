@@ -2,7 +2,7 @@ dependencies:
   bluebird: 3.5.3
   body-parser: 1.18.3
   express: 4.16.4
-  noblox.js: 4.2.4
+  noblox.js: 4.2.5
   validator: 6.3.0
 packages:
   /@types/node/11.13.0:
@@ -527,7 +527,7 @@ packages:
       node: '>= 0.6'
     resolution:
       integrity: sha1-KzJxhOiZIQEXeyhWP7XnECrNDKk=
-  /noblox.js/4.2.4:
+  /noblox.js/4.2.5:
     dependencies:
       bluebird: 3.5.4
       cheerio: 1.0.0-rc.2
@@ -537,7 +537,7 @@ packages:
       signalr-client: 0.0.17
     dev: false
     resolution:
-      integrity: sha512-/sYGYJ0Lp0pqYlazW+nFES5RPcrT9bMZAb+TpZaFSSk6dZuQ/SopsFsAxPaVyEXyKo+jqfGd7Axst/nznHPr+A==
+      integrity: sha512-Iq4scskDUjW9YfZU+t23chmitWUCYWd7bOjTpz7QYf48tAMID3cFekYluJNMwNxPQdFPsvR+6KsaBvVzZKg2jQ==
   /nth-check/1.0.2:
     dependencies:
       boolbase: 1.0.0
@@ -893,5 +893,5 @@ specifiers:
   bluebird: ^3.4.6
   body-parser: ^1.15.2
   express: ^4.14.0
-  noblox.js: ^4.2.4
+  noblox.js: ^4.2.5
   validator: ^6.1.0
