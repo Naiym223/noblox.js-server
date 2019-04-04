@@ -893,5 +893,5 @@ specifiers:
   bluebird: ^3.4.6
   body-parser: ^1.15.2
   express: ^4.14.0
-  noblox.js: ^4.2.5
+  noblox.js: ^4.2.4
   validator: ^6.1.0
