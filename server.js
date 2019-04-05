@@ -1,3 +1,4 @@
+
 var express = require('express')
 var rbx = require('noblox.js')
 var fs = require('fs')
@@ -224,7 +225,7 @@ function getPlayersWithOpt (req, res, next) {
     if (inProgress[uid]) { // Check if job was deleted
       completed[uid] = true
       var file = fs.createWriteStream('./players/' + uid)
-      file.write(JSON.stringify(info, null, ' '))
+      //file.write(JSON.stringify(info, null, ' '))
     }
     info = null // Bye, bye
   })
