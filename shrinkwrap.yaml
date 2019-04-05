@@ -3,6 +3,7 @@ dependencies:
   body-parser: 1.18.3
   express: 4.16.4
   noblox.js: 4.2.5
+  pnpm: 3.1.0
   validator: 6.3.0
 packages:
   /@types/node/11.13.0:
@@ -576,6 +577,13 @@ packages:
     dev: false
     resolution:
       integrity: sha1-Ywn04OX6kT7BxpMHrjZLSzd8nns=
+  /pnpm/3.1.0:
+    dev: false
+    engines:
+      node: '>=8'
+    hasBin: true
+    resolution:
+      integrity: sha512-+Ywkb2rg5uX6/CppRBFmefrQn8EiXK8H0ntRoWHuQAzLErrVXtbyuRKhWMUG5ewr9raQUOACou/uaThE9jzhwA==
   /proxy-addr/2.0.4:
     dependencies:
       forwarded: 0.1.2
@@ -893,5 +901,6 @@ specifiers:
   bluebird: ^3.4.6
   body-parser: ^1.15.2
   express: ^4.14.0
-  noblox.js: ^4.2.4
+  noblox.js: ^4.2.5
+  pnpm: ^3.1.0
   validator: ^6.1.0
