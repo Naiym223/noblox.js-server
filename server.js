@@ -161,7 +161,7 @@ function changeRank (amount) {
     var group = opt.group
     checkRank(opt)
       .then(function (rank) {
-        return rbx.getRoles(group)
+        return rbx.getRoles({group: group})
           .then(function (roles) {
             var found
             var foundRank
