@@ -288,25 +288,6 @@ app.post('/handleJoinRequest/:group/:username/:accept', authenticate, function (
     })
 })
 
-app.post('/message/:recipient/', authenticate, function (req, res, next) {
-  var requiredFields = {
-    'recipient': 'int',
-    'subject': 'string',
-    'body': 'string'
-  }
-  var validate = [req.params, req.body]
-  var opt = verifyParameters(res, validate, requiredFields)
-  if (!opt) {
-    return
-  }
-  rbx.message(opt)
-    .then(function () {
-      res.json({error: null, message: 'Messaged user ' + opt.recipient + ' with subject "' + opt.subject + '"'})
-    })
-    .catch(function (err) {
-      sendErr(res, {error: 'Message failed: ' + err.message})
-    })
-})
 
 app.post('/shout/:group', authenticate, function (req, res, next) {
   var requiredFields = {
@@ -329,42 +310,6 @@ app.post('/shout/:group', authenticate, function (req, res, next) {
     })
 })
 
-app.post('/post/:group', authenticate, function (req, res, next) {
-  var requiredFields = {
-    'group': 'int',
-    'message': 'string'
-  }
-  var validate = [req.params, req.body]
-  var opt = verifyParameters(res, validate, requiredFields)
-  if (!opt) {
-    return
-  }
-  rbx.post(opt)
-    .then(function () {
-      res.json({error: null, message: 'Posted in group ' + opt.group})
-    })
-    .catch(function (err) {
-      sendErr(res, {error: 'Error: ' + err.message})
-    })
-})
-
-app.get('/getBlurb/:userId', function (req, res, next) {
-  var requiredFields = {
-    'userId': 'int'
-  }
-  var validate = [req.params]
-  var opt = verifyParameters(res, validate, requiredFields)
-  if (!opt) {
-    return
-  }
-  rbx.getBlurb(opt)
-    .then(function (blurb) {
-      res.json({error: null, data: {blurb: blurb}})
-    })
-    .catch(function (err) {
-      sendErr(res, {error: 'Error: ' + err.message})
-    })
-})
 
 app.post('/promote/:group/:target', authenticate, function (req, res, next) {
  rbx.promote(req.group, req.target)
@@ -372,75 +317,7 @@ app.post('/promote/:group/:target', authenticate, function (req, res, next) {
 app.post('/demote/:group/:target', authenticate,  function (req, res, next) {
  rbx.demote(req.group, req.target)
 })
-app.post('/getPlayers/make/:group/:rank', getPlayersWithOpt)
-app.post('/getPlayers/make/:group', getPlayersWithOpt)
 
-app.post('/getPlayers/delete/:uid', authenticate, function (req, res, next) {
-  var uid = req.params.uid
-  function fail () {
-    sendErr(res, {error: 'Invalid ID or the job is not complete'})
-  }
-  if (uid.length === 10 && validator.isHexadecimal(uid)) {
-    var path = './players/' + uid
-    if (completed[uid]) {
-      completed[uid] = false
-      inProgress[uid] = null
-      fs.unlink(path, function (err) { // Since the uid was verified to be hex this shouldn't be a security issue
-        if (err) {
-          next(err)
-        } else {
-          res.json({error: null, message: 'File deleted'})
-        }
-      })
-    }
-  } else if (inProgress[uid]) {
-    inProgress[uid] = null
-    res.json({error: null, message: 'Removed from list, the job itself has not been stopped'})
-  } else {
-    fail()
-  }
-})
-
-app.get('/getPlayers/retrieve/:uid', function (req, res, next) {
-  var uid = req.params.uid
-  function fail () {
-    sendErr(res, {error: 'Invalid ID'})
-  }
-  if (uid.length === 10 && validator.isHexadecimal(uid)) {
-    var path = './players/' + uid
-    var complete = completed[uid]
-    var progress = inProgress[uid]
-    if (complete) {
-      fs.stat(path, function (err) {
-        if (err) {
-          next(err)
-        } else {
-          res.append('Content-Type', 'application/json')
-          res.write('{"error":null,"data":{"progress":100,"complete":true,')
-          var stream = fs.createReadStream(path)
-          var first = true
-          stream.on('data', function (data) {
-            if (first) {
-              first = false
-              res.write(data.toString().substring(1))
-            } else {
-              res.write(data)
-            }
-          })
-          stream.on('end', function () {
-            res.end('}')
-          })
-        }
-      })
-    } else if (progress) {
-      sendErr(res, {error: 'Job is still processing', data: {complete: false, progress: progress()}}, 200)
-    } else {
-      fail()
-    }
-  } else {
-    fail()
-  }
-})
 
 app.use(function (err, req, res, next) {
   console.error(err.stack)
