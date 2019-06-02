@@ -366,9 +366,12 @@ app.get('/getBlurb/:userId', function (req, res, next) {
     })
 })
 
-app.post('/promote/:group/:target', authenticate, changeRank(1))
-app.post('/demote/:group/:target', authenticate, changeRank(-1))
-
+app.post('/promote/:group/:target', authenticate, function (req, res, next) {
+ rbx.promote(req.group, req.target)
+})
+app.post('/demote/:group/:target', authenticate,  function (req, res, next) {
+ rbx.demote(req.group, req.target)
+})
 app.post('/getPlayers/make/:group/:rank', getPlayersWithOpt)
 app.post('/getPlayers/make/:group', getPlayersWithOpt)
 
