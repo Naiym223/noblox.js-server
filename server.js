@@ -296,5 +296,5 @@ login().then(function () {
   })
 
 app.get('/', function(req, res, next) {
-  res.send("OK");
+  res.send("OK BOOTING UP");
 });
