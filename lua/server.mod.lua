@@ -76,30 +76,6 @@ function groups.handleJoinRequest (group, username, accept)
   return http.post('/handleJoinRequest/'..group..'/'..username..'/'..acceptString)
 end
 
-function groups.getPlayers (group, rank, limit, online)
-  local job = http.post('/getPlayers/make/'..group..(rank and '/'..rank or '')..'?limit='..(limit and limit or '-2')..'&online='..(online and 'true' or 'false')).data.uid
-  local complete, response = false
-  repeat
-    wait(0.5)
-    local success
-    success, response = http.get('/getPlayers/retrieve/'..job, true)
-    if not success and response:match('$Response was not valid json') then
-      error(response)
-    elseif success then
-      complete = response.data.complete
-    end
-  until complete
-  return response
-end
-
-function module.message (userId, subject, message)
-  return http.post('/message/'..userId, {subject = subject, body = message})
-end
-
-function module.getBlurb (userId)
-  return http.get('/getBlurb/'..userId)
-end
-
 return function (domain, newKey, group)
   local isString = (type(domain) == 'string')
   if (not domain) or (not isString) or (isString and #domain <= 0) then

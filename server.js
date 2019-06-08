@@ -27,19 +27,6 @@ rbx.setRank = function (opt) {
   }
 }
 
-var inProgress = {}
-var completed = {}
-
-var dir = './players'
-
-if (!fs.existsSync(dir)) {
-  fs.mkdirSync(dir)
-}
-
-fs.readdirSync('./players').forEach(function (file) { // This is considered a part of server startup and following functions could error anyways if it isn't complete, so using synchronous instead of asynchronous is very much intended.
-  completed[file] = true
-})
-
 function sendErr (res, json, status) {
   res.json(json)
 }
@@ -199,40 +186,6 @@ function changeRank (amount) {
       })
   }
 }
-
-function getPlayersWithOpt (req, res, next) {
-  var uid = crypto.randomBytes(5).toString('hex')
-  var requiredFields = {
-    'group': 'int'
-  }
-  var optionalFields = {
-    'rank': 'int',
-    'limit': 'int',
-    'online': 'boolean'
-  }
-  var validate = [req.params, req.query]
-
-  var opt = verifyParameters(res, validate, requiredFields, optionalFields)
-  if (!opt) {
-    return
-  }
-
-  inProgress[uid] = 0
-  var players = rbx.getPlayers(opt)
-
-  inProgress[uid] = players.getStatus
-  players.promise.then(function (info) {
-    if (inProgress[uid]) { // Check if job was deleted
-      completed[uid] = true
-      var file = fs.createWriteStream('./players/' + uid)
-      //file.write(JSON.stringify(info, null, ' '))
-    }
-    info = null // Bye, bye
-  })
-  res.json({error: null, data: {uid: uid}})
-}
-
-app.use(bodyParser.json())
 
 app.post('/setRank/:group/:target/:rank', authenticate, function (req, res, next) {
   var requiredFields = {
