@@ -6,6 +6,7 @@ var crypto = require('crypto')
 var validator = require('validator')
 var bodyParser = require('body-parser')
 var Promise = require('bluebird')
+const http = require('http');
 
 var app = express()
 var port = process.env.PORT || 8080
@@ -298,3 +299,7 @@ login().then(function () {
 app.get('/', function(req, res, next) {
   res.send("OK BOOTING UP");
 });
+
+setInterval(() => {
+  http.get(`http://${process.env.PROJECT_DOMAIN}.glitch.me/`);
+}, 280000);
