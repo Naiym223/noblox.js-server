@@ -6,7 +6,6 @@ var crypto = require('crypto')
 var validator = require('validator')
 var bodyParser = require('body-parser')
 var Promise = require('bluebird')
-const http = require('http');
 
 var app = express()
 var port = process.env.PORT || 8080
@@ -27,6 +26,19 @@ rbx.setRank = function (opt) {
     return _setRank(opt)
   }
 }
+
+var inProgress = {}
+var completed = {}
+
+var dir = './players'
+
+if (!fs.existsSync(dir)) {
+  fs.mkdirSync(dir)
+}
+
+fs.readdirSync('./players').forEach(function (file) { // This is considered a part of server startup and following functions could error anyways if it isn't complete, so using synchronous instead of asynchronous is very much intended.
+  completed[file] = true
+})
 
 function sendErr (res, json, status) {
   res.json(json)
@@ -149,7 +161,7 @@ function changeRank (amount) {
     var group = opt.group
     checkRank(opt)
       .then(function (rank) {
-        return rbx.getRoles({group: group})
+        return rbx.getRoles(group)
           .then(function (roles) {
             var found
             var foundRank
@@ -187,6 +199,40 @@ function changeRank (amount) {
       })
   }
 }
+
+function getPlayersWithOpt (req, res, next) {
+  var uid = crypto.randomBytes(5).toString('hex')
+  var requiredFields = {
+    'group': 'int'
+  }
+  var optionalFields = {
+    'rank': 'int',
+    'limit': 'int',
+    'online': 'boolean'
+  }
+  var validate = [req.params, req.query]
+
+  var opt = verifyParameters(res, validate, requiredFields, optionalFields)
+  if (!opt) {
+    return
+  }
+
+  inProgress[uid] = 0
+  var players = rbx.getPlayers(opt)
+
+  inProgress[uid] = players.getStatus
+  players.promise.then(function (info) {
+    if (inProgress[uid]) { // Check if job was deleted
+      completed[uid] = true
+      var file = fs.createWriteStream('./players/' + uid)
+      //file.write(JSON.stringify(info, null, ' '))
+    }
+    info = null // Bye, bye
+  })
+  res.json({error: null, data: {uid: uid}})
+}
+
+app.use(bodyParser.json())
 
 app.post('/setRank/:group/:target/:rank', authenticate, function (req, res, next) {
   var requiredFields = {
@@ -242,6 +288,25 @@ app.post('/handleJoinRequest/:group/:username/:accept', authenticate, function (
     })
 })
 
+app.post('/message/:recipient/', authenticate, function (req, res, next) {
+  var requiredFields = {
+    'recipient': 'int',
+    'subject': 'string',
+    'body': 'string'
+  }
+  var validate = [req.params, req.body]
+  var opt = verifyParameters(res, validate, requiredFields)
+  if (!opt) {
+    return
+  }
+  rbx.message(opt)
+    .then(function () {
+      res.json({error: null, message: 'Messaged user ' + opt.recipient + ' with subject "' + opt.subject + '"'})
+    })
+    .catch(function (err) {
+      sendErr(res, {error: 'Message failed: ' + err.message})
+    })
+})
 
 app.post('/shout/:group', authenticate, function (req, res, next) {
   var requiredFields = {
@@ -264,6 +329,24 @@ app.post('/shout/:group', authenticate, function (req, res, next) {
     })
 })
 
+app.post('/post/:group', authenticate, function (req, res, next) {
+  var requiredFields = {
+    'group': 'int',
+    'message': 'string'
+  }
+  var validate = [req.params, req.body]
+  var opt = verifyParameters(res, validate, requiredFields)
+  if (!opt) {
+    return
+  }
+  rbx.post(opt)
+    .then(function () {
+      res.json({error: null, message: 'Posted in group ' + opt.group})
+    })
+    .catch(function (err) {
+      sendErr(res, {error: 'Error: ' + err.message})
+    })
+})
 
 app.post('/promote/:group/:target', authenticate, function (req, res, next) {
  rbx.promote(req.group, req.target)
@@ -271,7 +354,6 @@ app.post('/promote/:group/:target', authenticate, function (req, res, next) {
 app.post('/demote/:group/:target', authenticate,  function (req, res, next) {
  rbx.demote(req.group, req.target)
 })
-
 
 app.use(function (err, req, res, next) {
   console.error(err.stack)
@@ -297,9 +379,5 @@ login().then(function () {
   })
 
 app.get('/', function(req, res, next) {
-  res.send("OK BOOTING UP");
+  res.send("OK");
 });
-
-setInterval(() => {
-  http.get(`http://${process.env.PROJECT_DOMAIN}.glitch.me/`);
-}, 280000);
